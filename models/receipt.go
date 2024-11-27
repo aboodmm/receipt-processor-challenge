@@ -1,7 +1,5 @@
 package models
 
-var ReceiptStore map[string]Receipt
-
 type Receipt struct {
 	Retailer     string  `json:"retailer"`
 	PurchaseDate string  `json:"purchaseDate"`
@@ -13,4 +11,8 @@ type Receipt struct {
 type items struct {
 	ShortDescription string `json:"shortDescription"`
 	Price            string `json:"price"`
+}
+
+type ReceiptResponse struct {
+	Id string `json:"id"`
 }

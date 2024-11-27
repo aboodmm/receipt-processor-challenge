@@ -4,16 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/aboodmm/receipt-processor/models"
 	"github.com/aboodmm/receipt-processor/routes"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
 
-	for k, v := range models.ReceiptStore {
-		fmt.Println(k, v)
-	}
 	router := routes.SetupRoutes()
 	log.Info().Msg("Initializing router")
 
