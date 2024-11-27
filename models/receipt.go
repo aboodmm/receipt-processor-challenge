@@ -1,14 +1,16 @@
 package models
 
-type receipt struct {
-	Retailer     string              `json:"retailer"`
-	PurchaseDate string              `json:"purchaseDate"`
-	PurchaseTime string              `json:"purchaseTime"`
-	Total        string              `json:"total"`
-	Items        []map[string]string `json:"items"`
+var ReceiptStore map[string]Receipt
+
+type Receipt struct {
+	Retailer     string  `json:"retailer"`
+	PurchaseDate string  `json:"purchaseDate"`
+	PurchaseTime string  `json:"purchaseTime"`
+	Total        string  `json:"total"`
+	Items        []items `json:"items"`
 }
 
-type ReceiptStore struct {
-	Id string `json:"id`
-	Receipt [map][string]string `json:"receipt"`
+type items struct {
+	ShortDescription string `json:"shortDescription"`
+	Price            string `json:"price"`
 }
