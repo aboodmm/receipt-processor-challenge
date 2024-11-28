@@ -1,16 +1,16 @@
 package cache
 
 import (
-	"github.com/patrickmn/go-cache"
+	"github.com/aboodmm/receipt-processor/models"
 )
 
-var cacheO *cache.Cache
+var cacheO map[string]models.Receipt
 
-func getCache() *cache.Cache {
+func GetCache() map[string]models.Receipt {
 
 	if cacheO != nil {
 		return cacheO
 	}
-	cacheO = cache.New(-1, 0)
+	cacheO = make(map[string]models.Receipt)
 	return cacheO
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/aboodmm/receipt-processor/cache"
 	"net/http"
 
 	"github.com/aboodmm/receipt-processor/models"
@@ -17,10 +18,18 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 
 	var receipt models.Receipt
 	err := decoder.Decode(&receipt)
+
+	// Validation code -> deserialize into receipt struct
 	if err != nil {
-		log.Error().Err(err).Msgf("Error: Deserialization error, Obj: %+v", r.Body)
+		log.Error().Err(err).Msgf("Error: Deserialization error")
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-	models.ReceiptStore[id] = receipt
+	//var cacheO map[string]models.Receipt
+	//cacheO = cache.GetCache()
+
+	cacheO := cache.GetCache()
+	cacheO[id] = receipt
 
 	response := &models.ReceiptResponse{
 		Id: id,
