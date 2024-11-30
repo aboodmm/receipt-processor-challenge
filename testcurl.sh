@@ -21,3 +21,5 @@ curl -d '{
                  {"shortDescription": "Pepsi - 12-oz", "price": "1.25"}
              ]
 }' http://localhost:8080/receipts/process
+
+curl http://localhost:8080/receipts/c142e716-2c61-44a5-9288-6ffee34dc7b7/points

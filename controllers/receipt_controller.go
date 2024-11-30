@@ -7,6 +7,7 @@ import (
 
 	"github.com/aboodmm/receipt-processor/models"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
 )
 
@@ -25,8 +26,6 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	//var cacheO map[string]models.Receipt
-	//cacheO = cache.GetCache()
 
 	cacheO := cache.GetCache()
 	cacheO[id] = receipt
@@ -39,4 +38,21 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 
 func HandlePoints(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	cacheO := cache.GetCache()
+	receipt, exists := cacheO[id]
+	if exists {
+		points := 0
+		points += countAlpha(receipt.Retailer)
+	} else {
+		log.Error().Msgf("Error: Receipt with id %s doesn't exist!", id)
+	}
+
+}
+
+func countAlpha(name string) int {
+	return 0
 }
