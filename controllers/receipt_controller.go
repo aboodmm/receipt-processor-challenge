@@ -3,7 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/aboodmm/receipt-processor/cache"
+	"math"
 	"net/http"
+	"strconv"
 
 	"github.com/aboodmm/receipt-processor/models"
 	"github.com/google/uuid"
@@ -41,18 +43,54 @@ func HandlePoints(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	id := vars["id"]
+	points := 0
 
 	cacheO := cache.GetCache()
 	receipt, exists := cacheO[id]
 	if exists {
-		points := 0
 		points += countAlpha(receipt.Retailer)
+		points += countRound(receipt.Total)
+		points += countItems(len(receipt.Items))
 	} else {
 		log.Error().Msgf("Error: Receipt with id %s doesn't exist!", id)
 	}
 
+	response := &models.PointResponse{
+		Points: points,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
 func countAlpha(name string) int {
+	return len(name)
+}
+
+func countRound(total string) int {
+	a, err := strconv.ParseFloat(total, 32)
+	if err != nil {
+		log.Error().Err(err).Msgf("Error: Format error")
+	}
+	if a == math.Trunc(a) {
+		return 50
+	}
 	return 0
+}
+
+func countMultiple(total string) int {
+	a, err := strconv.ParseFloat(total, 32)
+	if err != nil {
+		log.Error().Err(err).Msgf("Error: Format error")
+	}
+	b := a / float64(4)
+
+	if math.Floor(b) == 4 {
+		return 25
+	}
+	return 0
+}
+
+func countItems(count int) int {
+	a := math.Floor(float64(count) / float64(2))
+	b := int(5 * a)
+	return b
 }

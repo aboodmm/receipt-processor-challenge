@@ -16,3 +16,7 @@ type items struct {
 type ReceiptResponse struct {
 	Id string `json:"id"`
 }
+
+type PointResponse struct {
+	Points int `json:"points"`
+}
