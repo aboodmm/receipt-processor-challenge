@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/aboodmm/receipt-processor/models"
 	"github.com/google/uuid"
@@ -51,6 +52,7 @@ func HandlePoints(w http.ResponseWriter, r *http.Request) {
 		points += countAlpha(receipt.Retailer)
 		points += countRound(receipt.Total)
 		points += countItems(len(receipt.Items))
+		points += countMultandPrice(receipt)
 	} else {
 		log.Error().Msgf("Error: Receipt with id %s doesn't exist!", id)
 	}
@@ -93,4 +95,17 @@ func countItems(count int) int {
 	a := math.Floor(float64(count) / float64(2))
 	b := int(5 * a)
 	return b
+}
+
+func countMultandPrice(receipt models.Receipt) int {
+	c := 0
+	for i := 0; i < len(receipt.Items); i++ {
+		a := len(strings.TrimSpace(receipt.Items[i].ShortDescription))
+		if a%3 == 0 {
+			b, _ := strconv.ParseFloat(receipt.Items[i].Price, 32)
+			d := math.Ceil(0.2 * b)
+			c += int(d)
+		}
+	}
+	return c
 }
