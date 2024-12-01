@@ -3,15 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/aboodmm/receipt-processor/cache"
-	"math"
-	"net/http"
-	"strconv"
-	"strings"
-
 	"github.com/aboodmm/receipt-processor/models"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog/log"
+	"math"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +52,8 @@ func HandlePoints(w http.ResponseWriter, r *http.Request) {
 		points += countRound(receipt.Total)
 		points += countItems(len(receipt.Items))
 		points += countMultandPrice(receipt)
+		points += countDay(receipt.PurchaseDate)
+		points += countTime(receipt.PurchaseTime)
 	} else {
 		log.Error().Msgf("Error: Receipt with id %s doesn't exist!", id)
 	}
@@ -108,4 +109,21 @@ func countMultandPrice(receipt models.Receipt) int {
 		}
 	}
 	return c
+}
+
+func countDay(date string) int {
+	lastchar := date[len(date)-1:]
+	a, _ := strconv.Atoi(lastchar)
+	if a%2 == 0 {
+		return 0
+	}
+	return 6
+}
+
+func countTime(time string) int {
+	a, _ := strconv.Atoi(time[:2])
+	if a >= 14 && a < 16 {
+		return 10
+	}
+	return 0
 }

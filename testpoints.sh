@@ -1,0 +1,1 @@
+curl http://localhost:8080/receipts/0a60489a-6aa2-4677-9718-aa4beb482ea8/points
